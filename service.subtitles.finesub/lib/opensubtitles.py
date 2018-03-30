@@ -19,9 +19,7 @@ class OpenSubtitles:
         self.session.headers.update({"User-Agent": UA})
 
         self.movie_path = movie_path
-
-        self.movie_size = os.path.getsize(self.movie_path)
-        self.movie_hash = hash_video.calc_file_hash(self.movie_path)
+        self.movie_size, self.movie_hash = hash_video.calc_file_hash(self.movie_path)
 
         self.timeout = 10
 

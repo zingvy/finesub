@@ -1,6 +1,7 @@
 from __future__ import unicode_literals
 import struct
 import os
+import xbmcvfs
 
 
 def calc_file_hash(filepath):
@@ -13,14 +14,13 @@ def calc_file_hash(filepath):
         longlongformat = 'q'  # long long
         bytesize = struct.calcsize(longlongformat)
 
-        f = open(filepath, 'rb')
+        f = xbmcvfs.File(filepath, "rb")
 
-        filesize = os.path.getsize(filepath)
+        filesize = f.size()
         filehash = filesize
 
         if filesize < 65536 * 2:
-            raise Exception('SizeError: Minimum file size must be 120Kb'
-                            )
+            raise Exception('SizeError: Minimum file size must be 120Kb')
 
         for x in range(65536 // bytesize):
             buffer = f.read(bytesize)
@@ -35,8 +35,9 @@ def calc_file_hash(filepath):
             filehash += l_value
             filehash = filehash & 0xFFFFFFFFFFFFFFFF
 
-        f.close()
         filehash = '%016x' % filehash
-        return filehash
+        return filesize, filehash
     except IOError:
         raise
+    finally:
+        f.close()
