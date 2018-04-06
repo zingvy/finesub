@@ -47,7 +47,9 @@ def search_IMDB(full_file_path):
     log( sys._getframe().f_code.co_name ,"Get movie info from opensubtitles: <<%s>>" % json.dumps(movie_info))
     if not movie_info:
         return []
-    imdb_id = movie_info.get("SeriesIMDBParent", movie_info.get("IDMovieImdb"))
+    imdb_id = movie_info.get("SeriesIMDBParent")
+    if not imdb_id or imdb_id == "0":
+        imdb_id = movie_info.get("IDMovieImdb")
     if not imdb_id:
         return []
 

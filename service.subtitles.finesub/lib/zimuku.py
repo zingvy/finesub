@@ -24,11 +24,16 @@ class Zimuku:
         data = self.session.get(self.search_url, verify=False, timeout=TIMEOUT).text
         soup = BeautifulSoup(data, "html.parser")
         title_div = soup.find('div', {"class":"title"})
+        if not title_div:
+            return False
         link = title_div.find("a")
         return link.get('href')
 
     def fetch_subs_list(self):
-        url = "%s%s" % (self.domain, self.fetch_movie_uri())
+        uri = self.fetch_movie_uri()
+        if not uri:
+            return False
+        url = "%s%s" % (self.domain, uri)
         data = self.session.get(url, verify=False, timeout=TIMEOUT).text
         soup = BeautifulSoup(data, 'html.parser').find("div", class_="subs box clearfix")
         subs = soup.tbody.find_all("tr")
